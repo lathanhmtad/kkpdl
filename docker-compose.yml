@@ -1,0 +1,39 @@
+services:
+  dataingestion:
+    build: 
+      context: './data-ingestion/'
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3000
+    depends_on:
+      - databaseapi
+  mysql:
+    build: 
+      context: './database-api/'
+      dockerfile: Dockerfile
+    ports:
+      - 3006:3006
+    volumes:
+      - 
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+  databaseapi:
+    build: 
+      context: './database-api/'
+      dockerfile: Dockerfile
+    ports:
+      - 3006:3006
+    depends_on:
+      - mysql
+    frontend:
+      build: 
+      context: './database-api/'
+      dockerfile: Dockerfile
+      ports:
+        - 3006:3006
+      depends_on:
+        - databaseapi
+
+networks:
+  app-network:
+    driver: bridge
